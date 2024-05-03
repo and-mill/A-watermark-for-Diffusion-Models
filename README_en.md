@@ -42,6 +42,29 @@
 
 ## Tutorial for SD-CLI
 
+and-mill: Just do this
+```
+conda create -n "gaussian_shading" python=3.9
+conda activate gaussian_shading
+pip install -r stablediffusion/requirements.txt
+pip install -r requirements.txt
+mkdir ckpt
+cd ckpt
+wget https://huggingface.co/stabilityai/stable-diffusion-2-1-base/resolve/main/v2-1_512-ema-pruned.ckpt
+cd ..
+cd stablediffusion
+PYTHONPATH=../ python scripts/txt2img.py --prompt "a professional photograph of an astronaut riding a horse" \
+--ckpt ../ckpt/v2-1_512-ema-pruned.ckpt \
+--config ./configs/stable-diffusion/v2-inference.yaml \
+--H 512 --W 512  \
+--device cuda \
+--n_samples 2 \
+--key_hex "5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7" \
+--nonce_hex "" \
+--message "lthero"
+```
+to create watermarked astronauts
+
 ### Generating Watermarked Images
 
 1. Download and ensure the original [Stable Diffusion project](https://github.com/Stability-AI/stablediffusion) is able to generate images.
@@ -134,7 +157,8 @@ for n in trange(opt.n_iter, desc="Sampling"):
 3. Execute the command below to generate watermarked images.
 
 ```shell
-python scripts/txt2img.py --prompt "a professional photograph of an astronaut riding a horse" \
+cd stablediffusion
+PYTHONPATH=../ python scripts/txt2img.py --prompt "a professional photograph of an astronaut riding a horse" \
 --ckpt ../ckpt/v2-1_512-ema-pruned.ckpt \
 --config ./configs/stable-diffusion/v2-inference.yaml \
 --H 512 --W 512  \
@@ -186,6 +210,7 @@ print(nonce.hex())
 -----------
 
 ## [Recommended]Tutorial for SD-WebUI
+and-mill: THIS IS NOT SET UP YET. Use CLI instead.
 
 > This work implement watermark embedding functionality in the form of a script based on the [Stable Diffusion-WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) project
 
