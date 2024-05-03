@@ -40,30 +40,41 @@
     <p align="center">Bit Accuracy Result</p>
 </div>
 
-## Tutorial for SD-CLI
-
-and-mill: Just do this
+and-mill: JUST DO THIS
 ```
 conda create -n "gaussian_shading" python=3.9
 conda activate gaussian_shading
 pip install -r stablediffusion/requirements.txt
 pip install -r requirements.txt
+pip install -U transformers
+
 mkdir ckpt
 cd ckpt
 wget https://huggingface.co/stabilityai/stable-diffusion-2-1-base/resolve/main/v2-1_512-ema-pruned.ckpt
 cd ..
-cd stablediffusion
-PYTHONPATH=../ python scripts/txt2img.py --prompt "a professional photograph of an astronaut riding a horse" \
---ckpt ../ckpt/v2-1_512-ema-pruned.ckpt \
---config ./configs/stable-diffusion/v2-inference.yaml \
+
+PYTHONPATH=. python stablediffusion/scripts/txt2img.py --prompt "a professional photograph of an astronaut riding a horse" \
+--ckpt ckpt/v2-1_512-ema-pruned.ckpt \
+--config stablediffusion/configs/stable-diffusion/v2-inference.yaml \
 --H 512 --W 512  \
 --device cuda \
 --n_samples 2 \
 --key_hex "5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7" \
 --nonce_hex "" \
 --message "lthero"
+
+python extract.py \
+--single_image_path "outputs/txt2img-samples/samples/00000.png" \
+--image_directory_path "" \
+--key_hex "5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7" \
+--original_message_hex "6c746865726f0000000000000000000000000000000000000000000000000000" \
+--num_inference_steps 50 \
+--scheduler "DDIM" \
+--is_traverse_subdirectories 0
 ```
-to create watermarked astronauts
+to create watermarked astronauts and extract watermark again
+
+## Tutorial for SD-CLI
 
 ### Generating Watermarked Images
 
