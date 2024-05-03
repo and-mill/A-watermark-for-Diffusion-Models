@@ -78,30 +78,30 @@ def recover_exactracted_message(reversed_latents, key, nonce, l=1):
     # Reconstruct m from reversed_latents
     reconstructed_m_bits = []
     for z_s_T_value in np.nditer(reversed_latents):
-        # 使用norm.ppf的逆操作恢复原始的y值
+        # Use the inverse operation of norm.ppf to recover the original y value
         y_reconstructed = norm.cdf(z_s_T_value) * 2**l
         reconstructed_m_bits.append(int(y_reconstructed))
 
-    # 将二进制位转换为字节
+    # Convert binary bits to bytes
     m_reconstructed_bytes = bytes(int(''.join(str(bit) for bit in reconstructed_m_bits[i:i+8]), 2) for i in range(0, len(reconstructed_m_bits), 8))
 
-    # 解密m以恢复扩散过程前的数据s_d
+    # Decrypt m to recover the data s_d before diffusion
     s_d_reconstructed = decryptor.update(m_reconstructed_bytes) + decryptor.finalize()
     
-    # 使用vote机制
-    # 解密得到的字节串转换为二进制表示
+    # Using a voting mechanism
+    # Convert the decrypted byte string into a binary representation
     bits_list = ['{:08b}'.format(byte) for byte in s_d_reconstructed]
-    # 将二进制字符串合并为一个长字符串
+    # Merge the binary strings into a long string
     all_bits = ''.join(bits_list)
-    # 分割为64个段，每段代表s_d中的一行
+    # Divide into 64 segments, each segment representing a line in s_d
     segments = [all_bits[i:i+256] for i in range(0, len(all_bits), 256)]
 
-    # 投票机制确定每个位
+    # Voting mechanism to determine each bit
     reconstructed_message_bin = ''
     for i in range(256):
-        # 计算每个位在所有行中为'1'的次数
+        # Calculate the count of '1's for each bit across all lines
         count_1 = sum(segment[i] == '1' for segment in segments)
-        # 如果超过一半则该位为'1'，否则为'0'
+        # If more than half are '1', then the bit is '1', otherwise '0'
         reconstructed_message_bin += '1' if count_1 > len(segments) / 2 else '0'
 
     return reconstructed_message_bin
@@ -131,7 +131,7 @@ def get_result_for_one_image(args):
 
 
 def process_directory(args):
-    # 是否递归子目录
+    # Recurse subdirectories
     if args.is_traverse_subdirectories:
         with open(os.path.join(args.image_directory_path, "result.txt"), "a") as root_result_file:
             write_batch_info(root_result_file, args)
@@ -146,7 +146,7 @@ def process_directory(args):
         process_single_directory(args.image_directory_path, args)
 
 def process_single_directory(dir_path, args):
-    # 获取所有图像文件
+    # Retrieve all image files
     image_files = glob.glob(os.path.join(dir_path, "*.png")) + glob.glob(os.path.join(dir_path, "*.jpg"))
     if not image_files:
         return
@@ -173,7 +173,7 @@ def process_single_directory(dir_path, args):
             average_bit_accuracy = total_bit_accuracy / processed_images
             result_file.write(f"Average Bit Accuracy, {average_bit_accuracy}\n\n")
             result_file.write("=" * 40 + "Batch End" + "=" * 40 + "\n")
-            # 如果是子目录的子目录（例如`batch_01_withmark_addnoise`下的`JPEG_QF_10`目录），更新父目录的result.txt
+            # If it is a subdirectory of a subdirectory (for example, the JPEG_QF_10 directory under batch_01_withmark_addnoise), update the result.txt in the parent directory.
             parent_dir = os.path.dirname(dir_path)
             with open(os.path.join(parent_dir, "result.txt"), "a") as parent_result_file:
                 parent_result_file.write(f"{os.path.basename(dir_path)}, Average Bit Accuracy, {average_bit_accuracy}\n")
@@ -213,23 +213,20 @@ if __name__ == "__main__":
     parser.add_argument('--l', default=1, type=int, help="The size of slide windows for m")
     args = parser.parse_args()
 
-    # 将十六进制字符串转换为字节串
+    # Convert hexadecimal string to byte string
     args.key = bytes.fromhex(args.key_hex)
-    if args.nonce_hex!="":
-        # 使用参数的nonce_hex
+    if args.nonce_hex != "":
+        # Use the provided nonce_hex
         args.nonce = bytes.fromhex(args.nonce_hex)
     else:
-        # 使用固定的nonce, 将nonce_hex转换为字节
+        # Use a fixed nonce, convert nonce_hex to bytes
         args.nonce = bytes.fromhex(args.key_hex[16:48])
     
-    # 批处理
-    if args.image_directory_path!="":
+    # Batch processing
+    if args.image_directory_path != "":
         process_directory(args)
-    # 单次处理
-    elif args.single_image_path!="":
+    # Single image processing
+    elif args.single_image_path != "":
         get_result_for_one_image(args)
     else:
         print("Please set the argument 'image_directory_path' or 'single_image_path'")
-
-
-    
