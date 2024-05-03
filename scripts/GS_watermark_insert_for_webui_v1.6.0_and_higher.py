@@ -61,7 +61,7 @@ def init_gs_Z_s_T():
     # Convert m to binary form; m follows a uniform distribution
     m_bits = ''.join(format(byte, '08b') for byte in m)
     
-    # Window size l, can be any value except 1
+    # Window size could be 1, and also could be other value
     l = 1  # For example, change here to the needed window size
     
     index = 0

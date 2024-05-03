@@ -49,7 +49,7 @@ def gs_watermark_init_noise(opt, message=""):
     m_bits = ''.join(format(byte, '08b') for byte in m)
     # Initialize the results list to store the processing results for each window
     results = []
-    # Window size l, can be any value except 1
+    # Window size could be 1, and also could be other value
     l = 1  
 
     index = 0
