@@ -199,6 +199,27 @@ def parse_args():
         action='store_true',
         help="Use bfloat16",
     )
+    # Here are the new codes
+    # ----------------------------------------- and-mill: added for watermarking -----------------------------------------
+    parser.add_argument(
+        "--message",
+        type=str,
+        default="",
+        help="watermark message",
+    )
+    parser.add_argument(
+        "--key_hex",
+        type=str,
+        default="5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7",
+        help="key_hex",
+    )
+    parser.add_argument(
+        "--nonce_hex",
+        type=str,
+        default="05072fd1c2265f6f2e2a4080a2bfbdd8",
+        help="nonce_hex",
+    )
+    # ----------------------------------------- and-mill: added for watermarking -----------------------------------------
     opt = parser.parse_args()
     return opt
 
@@ -336,6 +357,11 @@ def main(opt):
         model.ema_scope():
             all_samples = list()
             for n in trange(opt.n_iter, desc="Sampling"):
+                # ----------------------------------------- and-mill: added for watermarking -----------------------------------------
+                from gs_insert import gs_watermark_init_noise
+                Z_s_T_arrays = [gs_watermark_init_noise(opt,opt.message) for _ in range(opt.n_samples)]
+                start_code = torch.stack([torch.tensor(Z_s_T_array).float() for Z_s_T_array in Z_s_T_arrays]).to(device)
+                # ----------------------------------------- and-mill: added for watermarking -----------------------------------------
                 for prompts in tqdm(data, desc="data"):
                     uc = None
                     if opt.scale != 1.0:
