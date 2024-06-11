@@ -62,7 +62,7 @@ PYTHONPATH=. python stablediffusion/scripts/txt2img.py --prompt "a professional 
 --message "lthero"
 
 python extract.py \
---single_image_path "outputs/txt2img-samples/samples/00029.png" \
+--single_image_path "outputs/txt2img-samples/samples/00000.png" \
 --image_directory_path "" \
 --num_inference_steps 50 \
 --scheduler "DDIM" \
