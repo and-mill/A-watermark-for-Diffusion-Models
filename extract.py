@@ -60,6 +60,14 @@ def exactract_latents(args):
     pipe.to(device)
     vae = pipe.vae
 
+    # ----------------------------------------- and-mill -----------------------------------------
+    print('---------------------------------------------------------------------------------------')
+    print('model_id is: ', args.model_id)
+    print('type(inverse_scheduler): ', type(inverse_scheduler))
+    print('type(pipe): ', type(pipe))
+    print('---------------------------------------------------------------------------------------')
+    # ----------------------------------------- and-mill -----------------------------------------
+
     input_img = load_image(args.single_image_path).to(device=device, dtype=dtype)
     latents = img_to_latents(input_img, vae)
 
@@ -221,6 +229,13 @@ if __name__ == "__main__":
     else:
         # Use a fixed nonce, convert nonce_hex to bytes
         args.nonce = bytes.fromhex(args.key_hex[16:48])
+
+    # ----------------------------------------- and-mill -----------------------------------------
+    print('---------------------------------------------------------------------------------------')
+    print('Key is: ', args.key_hex)
+    print('Nonce is: ', args.nonce.hex())
+    print('---------------------------------------------------------------------------------------')
+    # ----------------------------------------- and-mill -----------------------------------------
     
     # Batch processing
     if args.image_directory_path != "":

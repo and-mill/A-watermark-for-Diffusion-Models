@@ -60,11 +60,10 @@ PYTHONPATH=. python stablediffusion/scripts/txt2img.py --prompt "a professional 
 --device cuda \
 --n_samples 2 \
 --key_hex "5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7" \
---nonce_hex "" \
 --message "lthero"
 
 python extract.py \
---single_image_path "outputs/txt2img-samples/samples/00000.png" \
+--single_image_path "outputs/txt2img-samples/samples/00029.png" \
 --image_directory_path "" \
 --key_hex "5822ff9cce6772f714192f43863f6bad1bf54b78326973897e6b66c3186b77a7" \
 --original_message_hex "6c746865726f0000000000000000000000000000000000000000000000000000" \
